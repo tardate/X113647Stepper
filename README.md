@@ -15,11 +15,11 @@ best read in conjuction with a fantastic teardown and examination of the 28BYJ-4
 by [Gaven MacDonald on youtube](http://youtu.be/Dc16mKFA7Fo).
 
 It doesn't take long when playing around with an X113647 board and 28BYJ-48 motor to realise two things:
-* The drive control is quite different form that assumed by the standard Arduino Stepper library, and
-* There don't seem to be any suitable parts on offer to draw nice diagrams with the wonderful [Fritzing APP](http://fritzing.org/home/).
+* The drive control is quite different from that assumed by the standard [Arduino Stepper library](http://www.arduino.cc/en/Tutorial/Stepper), and
+* There don't seem to be any suitable parts on offer to draw nice diagrams with the wonderful [Fritzing app](http://fritzing.org/home/).
 
 So this repository is the result of my little efforts to get around these limitations. There are two things here:
-* An X113647Stepper Arduino Library, which drives the X113647 in a similar way to the standard Arduino Stepper library, but fixes the few incompatibilities and makes it possibel to fully exploit the stepper motor with the X113647 board, and
+* An X113647Stepper Arduino Library, which drives the X113647 in a similar way to the standard Arduino Stepper library, but fixes the few incompatibilities and makes it possible to fully exploit the stepper motor with the X113647 board, and
 * Some new Fritzing parts for the X113647 and 28BYJ-48. These are not suitable for etching your own stepper drive board, but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
 
 
