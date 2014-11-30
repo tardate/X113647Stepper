@@ -1,6 +1,6 @@
 # X113647Stepper Arduino Library
 
-The X113647 Stepper Moter Driver Board is pretty common in Arduino kits, and
+The X113647 Stepper Motor Driver Board is pretty common in Arduino kits, and
 [available from various suppliers on aliexpress](http://www.aliexpress.com/item/Free-shipping-one-set-5-v-ULN2003-stepper-motor-drive-board/1938256381.html),
 often with a 28BYJ-48 stepper motor. How do you know if you have a board like an X113647? Here's what mine looks like:
 
@@ -42,7 +42,7 @@ After searching high and low and not finding anything already available, I thoug
 * [X113647 Stepper Driver Board](./fritzing_parts/X113647 Stepper Driver Board.fzpz?raw=true) is a part for the board.
 * see the [fritzing_parts](./fritzing_parts/) folder for all the source files for the parts if you wish to modify, borrow or copy.
 
-With these parts you can draw stepper motor circuits like this canonical hookup of the X113647 and 28BYJ-48 to an Arduino Uno, with external power supply for the motor:
+With these parts you can draw stepper motor circuits like this canonical hookup of the X113647 and 28BYJ-48 to an Arduino Uno, with external power supply for the motor. In this case, the breadboard is just a glorified cable connector.
 
 ![The Build](./assets/X113647Stepper_bb.jpg?raw=true)
 

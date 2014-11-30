@@ -1,5 +1,5 @@
 /*
-  X113647Stepper.cpp - X113647 Stepper Moter Driver Board library for Arduino
+  X113647Stepper.cpp - X113647 Stepper Motor Driver Board library for Arduino
   See X113647Stepper.h for notes
 
  */

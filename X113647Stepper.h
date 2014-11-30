@@ -1,5 +1,5 @@
 /*
-  X113647Stepper.cpp - X113647 Stepper Moter Driver Board library for Arduino
+  X113647Stepper.cpp - X113647 Stepper Motor Driver Board library for Arduino
 
   Drives a 1-2 phase 5-Wire stepper motor using 4 wires via an X113647 (ULN2003-based) driver board
 
