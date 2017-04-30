@@ -15,7 +15,7 @@ best read in conjuction with a fantastic teardown and examination of the 28BYJ-4
 by [Gaven MacDonald on youtube](http://youtu.be/Dc16mKFA7Fo).
 
 It doesn't take long when playing around with an X113647 board and 28BYJ-48 motor to realise two things:
-* The drive control is quite different from that assumed by the standard [Arduino Stepper library](http://www.arduino.cc/en/Tutorial/Stepper), and
+* The drive control is quite different from that assumed by the standard [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper), and
 * There don't seem to be any suitable parts on offer to draw nice diagrams with the wonderful [Fritzing app](http://fritzing.org/home/).
 
 So this repository is the result of my little efforts to get around these limitations. There are two things here:
@@ -49,3 +49,8 @@ With these parts you can draw stepper motor circuits like this canonical hookup 
 Note the crossover of the wires eminating from the 28BYJ-48. This is actually done in the wiring of the standard connector provided with the stepper motor - but I haven't included this detail in the part as yet.
 
 
+## Credits and References
+* [28BYJ-48 stepper motor teardown](http://youtu.be/Dc16mKFA7Fo) - by Gaven MacDonald
+* [this geeetech page](http://www.geeetech.com/wiki/index.php/Stepper_Motor_5V_4-Phase_5-Wire_%26_ULN2003_Driver_Board_for_Arduino)
+* [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper)
+* [Fritzing](http://fritzing.org/home/)
