@@ -21,7 +21,7 @@ X113647Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
 
 void setup() {
   // set the speed in rpm:
-  myStepper.setSpeed(1.5);
+  myStepper.setSpeed(6.5);
 }
 
 void loop() {
