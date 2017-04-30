@@ -47,7 +47,7 @@ class X113647Stepper {
     void stepMotor(int this_step);
 
     unsigned long step_delay;    // delay between steps, in ms, based on speed
-    int minimum_delay;           // minimum delay between steps
+    unsigned long minimum_delay; // minimum delay between steps
     int number_of_steps;         // total number of steps this motor can take
     int step_mode;               // number of phases being used to drive the motor
     int steps_per_cycle;         // number of steps per revolution (before gearing)

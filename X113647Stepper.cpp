@@ -122,7 +122,7 @@ void X113647Stepper::step(int steps_to_move)
   int direction = 1;                    // Direction of rotation: default forward
   if (steps_to_move < 0) direction = 0; // reverse
 
-  long last_step_time = 0;         // time stamp in ms of when the last step was taken
+  unsigned long last_step_time = 0;     // time stamp in ms of when the last step was taken
 
   // decrement the number of steps, moving one step each time:
   while(steps_remaining > 0) {
