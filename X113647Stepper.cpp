@@ -51,11 +51,22 @@ X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_p
 }
 
 /*
-  Common (private) method to initialise stepper output
+  Emergency Stop - sets steps_remaining = 0 so step(int) should stop looping
+  when an interrupt returns into the loop.
+ */
+void X113647Stepper::estop()
+{
+  this->steps_remaining = 0;
+}
 
+/*
+  Common (private) method to initialise stepper output
 */
 void X113647Stepper::ignition()
 {
+  // set steps_remaining to zero
+  this->steps_remaining = 0;
+
   // common instance variable initialisation
   this->step_number = 0;
 
@@ -107,7 +118,8 @@ void X113647Stepper::ignition()
 void X113647Stepper::setSpeed(float whatSpeed)
 {
   this->step_delay = 60L * 1000L / this->number_of_steps / whatSpeed / this->signals_per_step;
-  if(this->step_delay < this->minimum_delay) this->step_delay = this->minimum_delay;
+  if(this->step_delay < this->minimum_delay)
+    this->step_delay = this->minimum_delay;
 }
 
 /*
@@ -116,7 +128,7 @@ void X113647Stepper::setSpeed(float whatSpeed)
  */
 void X113647Stepper::step(int steps_to_move)
 {
-  int steps_remaining = abs(steps_to_move) * this->signals_per_step;  // how many steps to take
+  this->steps_remaining = abs(steps_to_move) * this->signals_per_step;  // how many steps to take
 
   // determine direction based on whether steps_to_move is + or -:
   int direction = 1;                    // Direction of rotation: default forward
@@ -125,7 +137,7 @@ void X113647Stepper::step(int steps_to_move)
   unsigned long last_step_time = 0;     // time stamp in ms of when the last step was taken
 
   // decrement the number of steps, moving one step each time:
-  while(steps_remaining > 0) {
+  while(this->steps_remaining > 0) {
 
     // move only if the appropriate delay has passed:
     if (millis() >= last_step_time + this->step_delay) {
@@ -148,7 +160,7 @@ void X113647Stepper::step(int steps_to_move)
         this->step_number--;
       }
       // decrement the steps remaining:
-      steps_remaining--;
+      this->steps_remaining--;
       // step the motor to step number 0..7:
       stepMotor(this->step_number % this->steps_per_cycle);
     }
