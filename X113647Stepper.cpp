@@ -8,10 +8,6 @@
 #include "Arduino.h"
 #include "X113647Stepper.h"
 
-/*
- *   constructor for defualt single-phase operation
- *   Sets the number of steps per revolution and which pins should control the motor.
- */
 
 X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2, int motor_pin_3, int motor_pin_4)
 {
@@ -29,10 +25,6 @@ X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_p
 
 }
 
-/*
- *   constructor with step mode specification
- *   Sets the number of steps per revolution, stepping mode and which pins should control the motor.
- */
 
 X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2, int motor_pin_3, int motor_pin_4, int step_mode)
 {
@@ -50,18 +42,13 @@ X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_p
 
 }
 
-/*
-  Emergency Stop - sets steps_remaining = 0 so step(int) should stop looping
-  when an interrupt returns into the loop.
- */
-void X113647Stepper::estop()
+
+void X113647Stepper::emergencyStop()
 {
   this->steps_remaining = 0;
 }
 
-/*
-  Common (private) method to initialise stepper output
-*/
+
 void X113647Stepper::ignition()
 {
   // set steps_remaining to zero
@@ -111,10 +98,7 @@ void X113647Stepper::ignition()
   setSpeed(1);
 }
 
-/*
-  Sets the speed in revs per minute
 
-*/
 void X113647Stepper::setSpeed(float whatSpeed)
 {
   this->step_delay = 60L * 1000L / this->number_of_steps / whatSpeed / this->signals_per_step;
@@ -122,10 +106,7 @@ void X113647Stepper::setSpeed(float whatSpeed)
     this->step_delay = this->minimum_delay;
 }
 
-/*
-  Moves the motor steps_to_move steps.  If the number is negative,
-   the motor moves in the reverse direction.
- */
+
 void X113647Stepper::step(int steps_to_move)
 {
   this->steps_remaining = abs(steps_to_move) * this->signals_per_step;  // how many steps to take
@@ -172,9 +153,7 @@ void X113647Stepper::step(int steps_to_move)
   digitalWrite(motor_pin_4, LOW);
 }
 
-/*
- * Moves the motor forward or backwards.
- */
+
 void X113647Stepper::stepMotor(int thisStep)
 {
   digitalWrite(motor_pin_1, bitRead(this->step_codes[thisStep], 0));
@@ -183,9 +162,7 @@ void X113647Stepper::stepMotor(int thisStep)
   digitalWrite(motor_pin_4, bitRead(this->step_codes[thisStep], 3));
 }
 
-/*
-  version() returns the version of the library:
-*/
+
 int X113647Stepper::version(void)
 {
   return 1;

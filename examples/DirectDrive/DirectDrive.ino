@@ -9,14 +9,14 @@
 
 */
 
-int Pin0 = 8;
-int Pin1 = 9;
-int Pin2 = 10;
-int Pin3 = 11;
+static const int Pin0 = 8;
+static const int Pin1 = 9;
+static const int Pin2 = 10;
+static const int Pin3 = 11;
 boolean forward = true;
 
-int max_steps = 65;
 int step = 0;
+
 
 void setup() {
   pinMode(Pin0, OUTPUT);
@@ -24,6 +24,7 @@ void setup() {
   pinMode(Pin2, OUTPUT);
   pinMode(Pin3, OUTPUT);
 }
+
 
 void loop() {
 
@@ -78,16 +79,13 @@ void loop() {
       break;
   }
 
-  if(forward) {
-    step++;
-  } else {
-    step--;
-  }
-  if(step>7) {
-    step=0;
-  }
-  if(step<0) {
-    step=7;
-  }
+  if(forward) step++;
+  else step--;
+
+  if(step>7) step=0;
+
+  if(step<0) step=7;
+
   delay(1);
+
 }

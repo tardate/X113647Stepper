@@ -15,10 +15,12 @@ best read in conjuction with a fantastic teardown and examination of the 28BYJ-4
 by [Gaven MacDonald on youtube](http://youtu.be/Dc16mKFA7Fo).
 
 It doesn't take long when playing around with an X113647 board and 28BYJ-48 motor to realise two things:
+
 * The drive control is quite different from that assumed by the standard [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper), and
 * There don't seem to be any suitable parts on offer to draw nice diagrams with the wonderful [Fritzing app](http://fritzing.org/home/).
 
 So this repository is the result of my little efforts to get around these limitations. There are two things here:
+
 * An X113647Stepper Arduino Library, which drives the X113647 in a similar way to the standard Arduino Stepper library, but fixes the few incompatibilities and makes it possible to fully exploit the stepper motor with the X113647 board, and
 * Some new Fritzing parts for the X113647 and 28BYJ-48. These are not suitable for etching your own stepper drive board, but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
 
@@ -28,7 +30,9 @@ Feel free to borrow any ideas, and if you spot any issues do let me know. IF you
 ## Example Programs
 
 There are a few examples included with the X113647Stepper library:
+
 * [FullSweep](./examples/FullSweep) a basic example of the X113647 at work - driving a stepper to sweep 360 degrees back and forth
+* [EmergencyStop](./examples/EmergencyStop) demonstrates emergency stop via an interrupt
 * [DirectDrive](./examples/DirectDrive) for diagnostic purposes, this program drives the X113647 directly without the use of any libraries
 * [SinglePhaseSweepWithStepperLibrary](./examples/SinglePhaseSweepWithStepperLibrary) demonstrates how it is possible to drive the X113647 board with the standard Stepper library - although with limited functionality.
 
@@ -36,8 +40,12 @@ There are a few examples included with the X113647Stepper library:
 
 If you use [Fritzing](http://fritzing.org/home/), it is annoying not to have parts available for these common stepper components!
 
-After searching high and low and not finding anything already available, I thought I'd try my hand at creating some custom parts
-(using the new part formats - most recently tested with Fritzing 0.9.0b06.11). This was my first experience creating Fritzing parts, so appologies for anything I botched up. Note that these parts are not suitable for etching your own stepper drive board, but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
+After searching high and low and not finding anything already available,
+I thought I'd try my hand at creating some custom parts (using the new part formats - most recently tested with Fritzing 0.9.0b06.11).
+This was my first experience creating Fritzing parts, so appologies for anything I botched up.
+Note that these parts are not suitable for etching your own stepper drive board,
+but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
+
 * [28BYJ-48 Stepper Motor](./fritzing_parts/28BYJ-48_StepperMotor.fzpz?raw=true) is a part similar to the [Adafruit Gear-Reduced Steeper Motor](https://www.adafruit.com/products/858) however with different connections
 * [X113647 Stepper Driver Board](./fritzing_parts/X113647_StepperDriverBoard.fzpz?raw=true) is a part for the board.
 * see the [fritzing_parts](./fritzing_parts/) folder for all the source files for the parts if you wish to modify, borrow or copy.

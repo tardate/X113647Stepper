@@ -43,23 +43,23 @@
 #include <Stepper.h>
 
 // change this to fit the number of steps per revolution for your motor
-const int stepsPerRevolution = 64 * 32;
+static const int STEPS_PER_REVOLUTION = 64 * 32;
 
 // initialize the stepper library on pins 8 through 11:
-Stepper myStepper(stepsPerRevolution, 11, 9, 8, 10);
+Stepper myStepper(STEPS_PER_REVOLUTION, 11, 9, 8, 10);
 
 void setup() {
   // set the speed in rpm:
-  myStepper.setSpeed(1);
+  myStepper.setSpeed(6.5);
 }
 
 void loop() {
   // step one revolution  in one direction:
-  myStepper.step(stepsPerRevolution);
+  myStepper.step(STEPS_PER_REVOLUTION);
   delay(500);
 
   // step one revolution in the other direction:
-  myStepper.step(-stepsPerRevolution);
+  myStepper.step(-STEPS_PER_REVOLUTION);
   delay(500);
 }
 
