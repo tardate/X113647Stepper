@@ -13,7 +13,7 @@ X113647Stepper	KEYWORD1
 #######################################
 
 step	KEYWORD2
-setSpeed  KEYWORD2
+setSpeed	KEYWORD2
 emergencyStop	KEYWORD2
 version	KEYWORD2
 
