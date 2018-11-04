@@ -10,7 +10,7 @@
 namespace tardate {
 
 
-X113647Stepper::X113647Stepper(int steps_per_revolution, int pin_in1, int pin_in2, int pin_in3, int pin_in4, StepMode step_mode = StepMode::FullStep) {
+X113647Stepper::X113647Stepper(int steps_per_revolution, int pin_in1, int pin_in2, int pin_in3, int pin_in4, StepMode step_mode) {
 
   this->step_mode = step_mode;
   this->steps_per_revolution = steps_per_revolution;
