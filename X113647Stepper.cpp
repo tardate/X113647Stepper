@@ -1,56 +1,37 @@
 /*
-  X113647Stepper.cpp - X113647 Stepper Motor Driver Board library for Arduino
+  X113647Stepper - a X113647/ULN2003A Stepper Motor library for Arduino
   See X113647Stepper.h for notes
-
  */
 
 
 #include "Arduino.h"
 #include "X113647Stepper.h"
 
-
-X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2, int motor_pin_3, int motor_pin_4)
-{
-
-  this->number_of_steps = number_of_steps;
-  this->step_mode = 1;
-
-  // Arduino pins for the motor control connection:
-  this->motor_pin_1 = motor_pin_1;
-  this->motor_pin_2 = motor_pin_2;
-  this->motor_pin_3 = motor_pin_3;
-  this->motor_pin_4 = motor_pin_4;
-
-  ignition();
-
-}
+namespace tardate {
 
 
-X113647Stepper::X113647Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2, int motor_pin_3, int motor_pin_4, int step_mode)
-{
+X113647Stepper::X113647Stepper(int steps_per_revolution, int pin_in1, int pin_in2, int pin_in3, int pin_in4, StepMode step_mode = StepMode::FullStep) {
 
-  this->number_of_steps = number_of_steps;
   this->step_mode = step_mode;
+  this->steps_per_revolution = steps_per_revolution;
 
   // Arduino pins for the motor control connection:
-  this->motor_pin_1 = motor_pin_1;
-  this->motor_pin_2 = motor_pin_2;
-  this->motor_pin_3 = motor_pin_3;
-  this->motor_pin_4 = motor_pin_4;
+  this->pin_in1 = pin_in1;
+  this->pin_in2 = pin_in2;
+  this->pin_in3 = pin_in3;
+  this->pin_in4 = pin_in4;
 
   ignition();
 
 }
 
 
-void X113647Stepper::emergencyStop()
-{
+void X113647Stepper::emergencyStop() {
   this->steps_remaining = 0;
 }
 
 
-void X113647Stepper::ignition()
-{
+void X113647Stepper::ignition() {
   // set steps_remaining to zero
   this->steps_remaining = 0;
 
@@ -59,22 +40,23 @@ void X113647Stepper::ignition()
 
   // Encode the the clockwise sequence of control signals:
   switch(this->step_mode) {
-  case 1:
+  case StepMode::SingleStep:
     this->steps_per_cycle = 4;
     this->step_codes[0] = B00001;
     this->step_codes[1] = B00010;
     this->step_codes[2] = B00100;
     this->step_codes[3] = B01000;
     break;
-  case 2:
+  case StepMode::FullStep:
     this->steps_per_cycle = 4;
     this->step_codes[0] = B00011;
     this->step_codes[1] = B00110;
     this->step_codes[2] = B01100;
     this->step_codes[3] = B01001;
     break;
-  case 3:
+  case StepMode::HalfStep:
     this->steps_per_cycle = 8;
+    this->steps_per_revolution = this->steps_per_revolution * 2;
     this->step_codes[0] = B00001;
     this->step_codes[1] = B00011;
     this->step_codes[2] = B00010;
@@ -89,26 +71,24 @@ void X113647Stepper::ignition()
   this->minimum_delay = this->signals_per_step + 1;
 
   // setup the pins on the microcontroller:
-  pinMode(this->motor_pin_1, OUTPUT);
-  pinMode(this->motor_pin_2, OUTPUT);
-  pinMode(this->motor_pin_3, OUTPUT);
-  pinMode(this->motor_pin_4, OUTPUT);
+  pinMode(this->pin_in1, OUTPUT);
+  pinMode(this->pin_in2, OUTPUT);
+  pinMode(this->pin_in3, OUTPUT);
+  pinMode(this->pin_in4, OUTPUT);
 
   // set a default speed 1rpm
   setSpeed(1);
 }
 
 
-void X113647Stepper::setSpeed(float whatSpeed)
-{
-  this->step_delay = 60L * 1000L / this->number_of_steps / whatSpeed / this->signals_per_step;
+void X113647Stepper::setSpeed(float whatSpeed) {
+  this->step_delay = 60L * 1000L / this->steps_per_revolution / whatSpeed / this->signals_per_step;
   if(this->step_delay < this->minimum_delay)
     this->step_delay = this->minimum_delay;
 }
 
 
-void X113647Stepper::step(int steps_to_move)
-{
+void X113647Stepper::step(int steps_to_move) {
   this->steps_remaining = abs(steps_to_move) * this->signals_per_step;  // how many steps to take
 
   // determine direction based on whether steps_to_move is + or -:
@@ -130,40 +110,40 @@ void X113647Stepper::step(int steps_to_move)
       // depending on direction:
       if (direction == 1) {
         this->step_number++;
-        if (this->step_number == this->number_of_steps) {
+        if (this->step_number == this->steps_per_revolution) {
           this->step_number = 0;
         }
       }
       else {
         if (this->step_number == 0) {
-          this->step_number = this->number_of_steps;
+          this->step_number = this->steps_per_revolution;
         }
         this->step_number--;
       }
       // decrement the steps remaining:
       this->steps_remaining--;
-      // step the motor to step number 0..7:
+      // step the motor:
       stepMotor(this->step_number % this->steps_per_cycle);
     }
   }
   // clear signals
-  digitalWrite(motor_pin_1, LOW);
-  digitalWrite(motor_pin_2, LOW);
-  digitalWrite(motor_pin_3, LOW);
-  digitalWrite(motor_pin_4, LOW);
+  digitalWrite(pin_in1, LOW);
+  digitalWrite(pin_in2, LOW);
+  digitalWrite(pin_in3, LOW);
+  digitalWrite(pin_in4, LOW);
 }
 
 
-void X113647Stepper::stepMotor(int thisStep)
-{
-  digitalWrite(motor_pin_1, bitRead(this->step_codes[thisStep], 0));
-  digitalWrite(motor_pin_2, bitRead(this->step_codes[thisStep], 1));
-  digitalWrite(motor_pin_3, bitRead(this->step_codes[thisStep], 2));
-  digitalWrite(motor_pin_4, bitRead(this->step_codes[thisStep], 3));
+void X113647Stepper::stepMotor(int thisStep) {
+  digitalWrite(pin_in1, bitRead(this->step_codes[thisStep], 0));
+  digitalWrite(pin_in2, bitRead(this->step_codes[thisStep], 1));
+  digitalWrite(pin_in3, bitRead(this->step_codes[thisStep], 2));
+  digitalWrite(pin_in4, bitRead(this->step_codes[thisStep], 3));
 }
 
 
-int X113647Stepper::version(void)
-{
-  return 1;
+int X113647Stepper::version(void) {
+  return 2;
+}
+
 }

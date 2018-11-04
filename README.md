@@ -1,61 +1,96 @@
 # X113647Stepper Arduino Library
 
-The X113647 Stepper Motor Driver Board is pretty common in Arduino kits, and
-[available from various suppliers on aliexpress](http://www.aliexpress.com/item/Free-shipping-one-set-5-v-ULN2003-stepper-motor-drive-board/1938256381.html),
-often with a 28BYJ-48 stepper motor. How do you know if you have a board like an X113647? Here's what mine looks like:
+The 28BYJ-48 stepper motor and ULN2003A-based X113647 Stepper Motor Driver Board is pretty common in Arduino kits, and
+[available from various suppliers on aliexpress](http://www.aliexpress.com/item/Free-shipping-one-set-5-v-ULN2003-stepper-motor-drive-board/1938256381.html).
+
+* 28BYJ-48 stepper motor is a unipolar motor with 32 steps and a 64:1 gear reduction drive.
+* the X113647 module is basically just the ULN2003A with additional LEDs and convenience pins for connecting power for the motor.
+
+For more information, I've gone into more detail, including Fritzing parts, in the LittleArduinoProjects repository:
+
+* [LEAP#431 28BYJ-48](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/28BYJ48) - all about the 28BYJ-48
+* [LEAP#432 ULN2003Module](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/ULN2003Module) - deconstructing a ULN2003 module such as the X113647
+
+
+## Why the X113647Stepper Library?
+
+Although the name is now a bit misleading, this project started as an attempt to address two issues:
+
+* clarify the pin connections required to work with the 28BYJ-48
+* add a half-step mode, where the standard Stepper library only provides full-step control
+
+I've updated the X113647Stepper library to better reflect these issues.
+Feel free to borrow and use this library if it helps. In general though, I'd recommend alternatives:
+
+* stick to the standard [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper) if full-step control is sufficient
+* look at some far more capable libraries such as [AccelStepper](https://github.com/waspinator/AccelStepper) if you need more
+
+
+## Pin Connections Summary
+
+Most (all?) versions of the 28BYJ-48 expose a consistent Blue-Pink-Yellow-Orange-Red wire sequence at the connector.
+Red is the common (5V/positive) connection.
+
+The full step sequence required by the 28BYJ-48 for the 4 control lines is:
+
+| Step | Blue | Pink | Yellow | Orange |
+|------|------|------|--------|--------|
+|  1   | 1    | 1    |        |        |
+|  2   |      | 1    | 1      |        |
+|  3   |      |      | 1      | 1      |
+|  4   | 1    |      |        | 1      |
+
+
+The standard Stepper Library implements the following sequence:
+
+|Step | C0 | C1 | C2 | C3 |
+|-----|----|----|----|----|
+|   1 |  1 |  0 |  1 |  0 |
+|   2 |  0 |  1 |  1 |  0 |
+|   3 |  0 |  1 |  0 |  1 |
+|   4 |  1 |  0 |  0 |  1 |
+
+
+It is readily observed that switching Pink/Yellow (C1/C2) aligns things nicely,
+so we end up with a 1-3-2-4 pin mapping for initializing the standard Stepper library as follows:
+
+    Stepper myStepper(STEPS_PER_REVOLUTION, PIN_IN1_BLUE, PIN_IN3_YELLOW, PIN_IN2_PINK, PIN_IN4_ORANGE);
+
+In full-step mode, `STEPS_PER_REVOLUTION` is 32 (steps) * 64 (gear reduction) i.e. 2048.
+
 
 ![The X113647](./assets/X113647_board.jpg?raw=true)
 
 
-Unfortunately, details of the board are scant. I'm not even sure if X113647 is it's correct name or nomenclature.
-
-One of the best technical resources is
-[this geeetech page](http://www.geeetech.com/wiki/index.php/Stepper_Motor_5V_4-Phase_5-Wire_%26_ULN2003_Driver_Board_for_Arduino),
-best read in conjuction with a fantastic teardown and examination of the 28BYJ-48 stepper motor
-by [Gaven MacDonald on youtube](http://youtu.be/Dc16mKFA7Fo).
-
-It doesn't take long when playing around with an X113647 board and 28BYJ-48 motor to realise two things:
-
-* The drive control is quite different from that assumed by the standard [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper), and
-* There don't seem to be any suitable parts on offer to draw nice diagrams with the wonderful [Fritzing app](http://fritzing.org/home/).
-
-So this repository is the result of my little efforts to get around these limitations. There are two things here:
-
-* An X113647Stepper Arduino Library, which drives the X113647 in a similar way to the standard Arduino Stepper library, but fixes the few incompatibilities and makes it possible to fully exploit the stepper motor with the X113647 board, and
-* Some new Fritzing parts for the X113647 and 28BYJ-48. These are not suitable for etching your own stepper drive board, but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
+## Using the X113647Stepper Library
 
 
-Feel free to borrow any ideas, and if you spot any issues do let me know. IF you see ways to improve what is on offer here, do let me know, or better yet, send a pull request!
+The `X113647Stepper` class (in the `tardate` namespace) is virtually a drop-in replacement for the Stepper library.
 
-## Example Programs
+Basic initialisaiton (full step mode by default):
 
-There are a few examples included with the X113647Stepper library:
+    tardate::X113647Stepper myStepper(STEPS_PER_REVOLUTION, PIN_IN1_BLUE, PIN_IN2_PINK, PIN_IN3_YELLOW, PIN_IN4_ORANGE);
 
-* [FullSweep](./examples/FullSweep) a basic example of the X113647 at work - driving a stepper to sweep 360 degrees back and forth
-* [EmergencyStop](./examples/EmergencyStop) demonstrates emergency stop via an interrupt
-* [DirectDrive](./examples/DirectDrive) for diagnostic purposes, this program drives the X113647 directly without the use of any libraries
-* [SinglePhaseSweepWithStepperLibrary](./examples/SinglePhaseSweepWithStepperLibrary) demonstrates how it is possible to drive the X113647 board with the standard Stepper library - although with limited functionality.
+Or add the StepMode parameter. For example, half-step:
 
-## Fritzing Parts
+    tardate::X113647Stepper myStepper(STEPS_PER_REVOLUTION, PIN_IN1_BLUE, PIN_IN2_PINK, PIN_IN3_YELLOW, PIN_IN4_ORANGE, tardate::StepMode::HalfStep);
 
-If you use [Fritzing](http://fritzing.org/home/), it is annoying not to have parts available for these common stepper components!
 
-After searching high and low and not finding anything already available,
-I thought I'd try my hand at creating some custom parts (using the new part formats - most recently tested with Fritzing 0.9.0b06.11).
-This was my first experience creating Fritzing parts, so appologies for anything I botched up.
-Note that these parts are not suitable for etching your own stepper drive board,
-but they do work nicely for drawing circuits involving and X113647 or 28BYJ-48 components.
+Example sketches:
 
-* [28BYJ-48 Stepper Motor](./fritzing_parts/28BYJ-48_StepperMotor.fzpz?raw=true) is a part similar to the [Adafruit Gear-Reduced Steeper Motor](https://www.adafruit.com/products/858) however with different connections
-* [X113647 Stepper Driver Board](./fritzing_parts/X113647_StepperDriverBoard.fzpz?raw=true) is a part for the board.
-* see the [fritzing_parts](./fritzing_parts/) folder for all the source files for the parts if you wish to modify, borrow or copy.
+* [DirectDrive.ino](./examples/DirectDrive/DirectDrive.ino) - examples of driving various stepper modes without a library
+* [WithStepperLibrary.ino](./examples/WithStepperLibrary/WithStepperLibrary.ino) - using the standard Stepper library
+* [HalfStepSweep.ino](./examples/HalfStepSweep/HalfStepSweep.ino) - using X113647Stepper, half-step
+* [FullStepSweep.ino](./examples/FullStepSweep/FullStepSweep.ino) - using X113647Stepper, full-step
+* [SingleStepSweep.ino](./examples/SingleStepSweep/SingleStepSweep.ino) - using X113647Stepper, single-step
+* [EmergencyStop.ino](./examples/EmergencyStop/EmergencyStop.ino) - using X113647Stepper, half-step, with immiedate stop function
 
-With these parts you can draw stepper motor circuits like this canonical hookup of the X113647 and 28BYJ-48 to an Arduino Uno, with external power supply for the motor. In this case, the breadboard is just a glorified cable connector.
+
 
 ## Construction
 
-The stepper motor and driver will typically draw at least 130mA at 5V with [FullSweep](./examples/FullSweep),
-and over 250mA at 5V with [SinglePhaseSweepWithStepperLibrary](./examples/SinglePhaseSweepWithStepperLibrary),
+The stepper motor and driver will typically draw at least 130mA at 5V with [HalfStepSweep](./examples/HalfStepSweep),
+and over 250mA at 5V with [WithStepperLibrary](./examples/WithStepperLibrary),
 so it is not particularly advisable to power directly from the Arduino's regulated supply.
 
 ![The Build](./assets/X113647Stepper_bb.jpg?raw=true)
@@ -65,7 +100,7 @@ Note the crossover of the wires eminating from the 28BYJ-48. This is actually do
 ![Schematic](./assets/X113647Stepper_schematic.jpg?raw=true)
 
 ## Credits and References
-* [28BYJ-48 stepper motor teardown](http://youtu.be/Dc16mKFA7Fo) - by Gaven MacDonald
-* [this geeetech page](http://www.geeetech.com/wiki/index.php/Stepper_Motor_5V_4-Phase_5-Wire_%26_ULN2003_Driver_Board_for_Arduino)
 * [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper)
-* [Fritzing](http://fritzing.org/home/)
+* [AccelStepper](https://github.com/waspinator/AccelStepper)
+* [LEAP#431 28BYJ-48](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/28BYJ48) - all about the 28BYJ-48
+* [LEAP#432 ULN2003Module](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/ULN2003Module)

@@ -1,24 +1,29 @@
-
 /*
- X113647 Stepper Motor Control - one revolution with emergency stop ISR
 
- This program drives a 4-Phase 5-Wire stepper motor using 4 wires
- via an X113647 (ULN2003-based) driver board.
+  EmergencyStop.ino
 
- The motor is attached to digital pins 8 - 11 of the Arduino.
+  Uses the X113647Stepper library, and demonstrates continuous cw/ccw rotation with an emergency stop ISR
 
- The motor should revolve one revolution in one direction, then
- one revolution in the other direction.
+  The motor should revolve one revolution in one direction, then
+  one revolution in the other direction.
+
+  For info and circuit diagrams see https://github.com/tardate/X113647Stepper
 
  */
 
 #include <X113647Stepper.h>
 
-static const int STEPS_PER_REVOLUTION = 64 * 32;  // change this to fit the number of steps per revolution for your motor
+static const int STEPS_PER_REVOLUTION = 32 * 64;
+
+static const int PIN_IN1_BLUE         = 8;
+static const int PIN_IN2_PINK         = 9;
+static const int PIN_IN3_YELLOW       = 10;
+static const int PIN_IN4_ORANGE       = 11;
+
 volatile boolean stopped = false;
 
-// initialize the stepper library on pins 8 through 11:
-X113647Stepper myStepper(STEPS_PER_REVOLUTION, 8, 9, 10, 11);
+// initialize the stepper library
+tardate::X113647Stepper myStepper(STEPS_PER_REVOLUTION, PIN_IN1_BLUE, PIN_IN2_PINK, PIN_IN3_YELLOW, PIN_IN4_ORANGE);
 
 
 void setup() {
