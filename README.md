@@ -6,10 +6,11 @@ The 28BYJ-48 stepper motor and ULN2003A-based X113647 Stepper Motor Driver Board
 * 28BYJ-48 stepper motor is a unipolar motor with 32 steps and a 64:1 gear reduction drive.
 * the X113647 module is basically just the ULN2003A with additional LEDs and convenience pins for connecting power for the motor.
 
-For more information, I've gone into more detail, including Fritzing parts, in the LittleArduinoProjects repository:
+I've gone into more detail, including Fritzing parts, in the LittleArduinoProjects repository:
 
 * [LEAP#431 28BYJ-48](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/28BYJ48) - all about the 28BYJ-48
 * [LEAP#432 ULN2003Module](https://github.com/tardate/LittleArduinoProjects/tree/master/Kinetics/StepperMotors/ULN2003Module) - deconstructing a ULN2003 module such as the X113647
+
 
 
 ## Why the X113647Stepper Library?
@@ -59,15 +60,12 @@ so we end up with a 1-3-2-4 pin mapping for initializing the standard Stepper li
 In full-step mode, `STEPS_PER_REVOLUTION` is 32 (steps) * 64 (gear reduction) i.e. 2048.
 
 
-![The X113647](./assets/X113647_board.jpg?raw=true)
-
-
 ## Using the X113647Stepper Library
 
 
 The `X113647Stepper` class (in the `tardate` namespace) is virtually a drop-in replacement for the Stepper library.
 
-Basic initialisaiton (full step mode by default):
+Basic initialisation (full step mode by default):
 
     tardate::X113647Stepper myStepper(STEPS_PER_REVOLUTION, PIN_IN1_BLUE, PIN_IN2_PINK, PIN_IN3_YELLOW, PIN_IN4_ORANGE);
 
@@ -98,6 +96,8 @@ so it is not particularly advisable to power directly from the Arduino's regulat
 Note the crossover of the wires eminating from the 28BYJ-48. This is actually done in the wiring of the standard connector provided with the stepper motor - but I haven't included this detail in the part as yet.
 
 ![Schematic](./assets/X113647Stepper_schematic.jpg?raw=true)
+
+![The X113647](./assets/X113647_board.jpg?raw=true)
 
 ## Credits and References
 * [Arduino Stepper library](https://www.arduino.cc/en/Reference/Stepper)
